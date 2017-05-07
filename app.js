@@ -17,9 +17,7 @@ function getFormInput() {
 
 function getWordAvgLength(words) {
   var wordSum = words.reduce( function(sum, word) { return sum + word.length; }, 0 );
-  console.log(wordSum);
-  var wordAvg = wordSum / words.length;
-  return wordAvg;
+  return (wordSum / words.length).toFixed(2); //average of length (of each word)
 }
 
 function wordsUnique(words) {
