@@ -1,47 +1,49 @@
 // your code here!
 
+function getTokens(rawString) {
+  // NB: `.filter(Boolean)` removes any falsy items from an array
+  return rawString.toString().toLowerCase().split(/[ ,!.";:-]+/).filter(Boolean).sort();
+}
+
 function getFormInput() {
   $('#user-text-input').submit(function(event) {
   event.preventDefault();
-  //$(".js-results").empty();
-  var rawUserInput = $(event.currentTarget).find('textarea[name="user-text"]').val(); 
-  //writeFizzBuzz(userNum);
-   //$(".js-results").text('<p>' + $(userNum)[0] + '</p>');
-   console.log(rawUserInput);
-  var processedInput = getTokens(rawUserInput);
-  //$('dl.text-report').removeClass('hidden');
-  $('p.output').text(rawUserInput);
+  var rawInput = $(event.currentTarget).find('textarea[name="user-text"]').val(); 
+  var text = getTokens(rawInput);
+  printWordStats(doWordStats(text));
 
-  //writeWordAnalysis(processedInput);
   });
 }
 
-function getTokens(rawUserInput) {
-  // NB: `.filter(Boolean)` removes any falsy items from an array
-  return rawUserInput.toLowerCase().split(/[ ,!.";:-]+/).filter(Boolean).sort();
+function getWordAvgLength(words) {
+  var wordSum = words.reduce(function(a, b) { return a.length + b.length; });
+  console.log(wordSum);
+  var wordAvg = wordSum / words.length;
+  return wordAvg;
 }
-  
-function mostFrequentWord(text) {
+
+function wordsUnique(words) {
+  uniqueWordList = Array.from(new Set(words));
+  return String(uniqueWordList.length);
+}
+
+function doWordStats(text) {
   var words = getTokens(text);
-  var wordFrequencies = {};
-  for (var i = 0; i <= words.length; i++) {
-    if (words[i] in wordFrequencies) {
-      wordFrequencies[words[i]]++;
-    }
-    else {
-      wordFrequencies[words[i]]=1;
-    }
-  }
-  var currentMaxKey = Object.keys(wordFrequencies)[0];
-  var currentMaxCount = wordFrequencies[currentMaxKey];
+  var wordCount = words.length;
+  var uniqueWordLength = wordsUnique(words);
+  var avgWordLength = getWordAvgLength(words);
+  return [wordCount, uniqueWordLength, avgWordLength];
+}
+
+function printWordStats(wordStats) {
+  var wordCount = wordStats[0];
+  var uniqueWordLength = wordStats[1];
+  var avgWordLength = wordStats[2];
   
-  for (var word in wordFrequencies) {
-    if (wordFrequencies[word] > currentMaxCount) {
-      currentMaxKey = word;
-      currentMaxCount = wordFrequencies[word];
-    }
-  }
-  return currentMaxKey;
+  $("dl.text-report").removeClass('hidden');
+  $(".word-count").text(wordCount);
+  $(".unique-word-length").text(uniqueWordLength);
+  $(".avg-word-length").text(avgWordLength);
 }
 
 getFormInput();
